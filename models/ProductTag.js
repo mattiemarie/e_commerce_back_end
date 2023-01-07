@@ -12,28 +12,18 @@ ProductTag.init(
       primaryKey: true,
       autoIncrement: true
     },
-    tag_name: {
-      type: DataTypes.STRING,
-    },
-    price: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-      validate: {
-        isDecimal: true,
-      },
-    },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: '10',
-      validate: {
-        isNumeric: true,
-      },
-    },
-    category_id: {
+    product_id: {
       type: DataTypes.INTEGER,
       reference: {
-        model: 'category',
+        model: 'product',
+        key: 'id'
+      }
+    },
+    tag_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      reference: {
+        model: 'tag',
         key: 'id'
       }
     }
