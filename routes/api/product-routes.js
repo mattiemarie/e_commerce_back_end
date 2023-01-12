@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
-// The `/api/products` endpoint
 
 // GET all products - include associations with Category and Tag data
 router.get('/', (req, res) => {
