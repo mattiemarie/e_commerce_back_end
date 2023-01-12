@@ -3,36 +3,31 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
 
-// get all products
-router.get('/', async (req, res) => {
-  try {
-    const productData = await Product.findAll(
+// GET all products - include associations with Category and Tag data
+router.get('/', (req, res) => {
+  Product.findAll({
+    include: [
       {
-        include: [
-          {
-            model: Category,
-            attributes: ['category_name']
-          },
-          {
-            model: Tag,
-            attributes: ['tag_name']
-          }
-        ]
+        model: Category,
+        attributes: ['id', 'category_name']
+      },
+      {
+        model: Tag,
+        attributes: ['id', 'tag_name']
       }
-    );
-    res.status(200).json(productData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-  // find all products
-  // be sure to include its associated Category and Tag data
-  ////Not Sure Here ^
+    ]
+  })
+    .then(productData => res.json(productData))
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json(err);
 
-// GET one product
-router.get('/:id', async (req, res) => {
-  try {
-    const productData = await Product.findByPk(req.params.id, {
+    }) 
+});
+
+// GET one product - include associatied Category and Tag data
+router.get('/:id', (req, res) => {
+  Product.findByPk(req.params.id, {
       include: [
         {
           model: Category,
@@ -43,20 +38,22 @@ router.get('/:id', async (req, res) => {
           attributes: ['tag_name']
         }
       ]
-    });
+    })
+      .then(productData => {
 
-    if (!productData) {
-      res.status(404).json({ message: 'No product found with this id!' });
-      return;
-    }
+        if (!productData) {
+        res.status(404).json({ message: 'No product found with this id!' });
+        return;
+        }
+        res.json(productData) 
+      })
 
-    res.status(200).json(productData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
+  
+      }) 
 });
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
 
 // create new product
 router.post('/', (req, res) => {
